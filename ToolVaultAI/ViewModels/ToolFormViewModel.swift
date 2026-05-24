@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -19,7 +18,6 @@ final class ToolFormViewModel: ObservableObject {
     @Published var assignedUser = ""
     @Published var notes = ""
     @Published var receiptPlaceholder = false
-    @Published var selectedPhotoItems: [PhotosPickerItem] = []
     @Published private(set) var photoData: [Data] = []
     @Published var isLoadingPhotos = false
     @Published var errorMessage: String?
@@ -36,20 +34,17 @@ final class ToolFormViewModel: ObservableObject {
         Double(estimatedResaleValueText.replacingOccurrences(of: ",", with: "")) ?? 0
     }
 
-    func loadPhotos(from items: [PhotosPickerItem]) async {
-        guard !items.isEmpty else { return }
-        isLoadingPhotos = true
-        defer { isLoadingPhotos = false }
-        for item in items {
-            do {
-                if let data = try await item.loadTransferable(type: Data.self) {
-                    photoData.append(data)
-                }
-            } catch {
-                errorMessage = "One photo could not be imported."
-            }
+    func setPhotoImporting(_ isImporting: Bool) {
+        isLoadingPhotos = isImporting
+    }
+
+    func addImportedPhoto(_ data: Data?) {
+        guard let data else {
+            errorMessage = "One photo could not be imported."
+            return
         }
-        selectedPhotoItems = []
+        photoData.append(data)
+        errorMessage = nil
     }
 
     func addCameraPhoto(_ data: Data) {
@@ -119,7 +114,6 @@ final class ToolFormViewModel: ObservableObject {
         assignedUser = ""
         notes = ""
         receiptPlaceholder = false
-        selectedPhotoItems = []
         photoData = []
         errorMessage = nil
     }

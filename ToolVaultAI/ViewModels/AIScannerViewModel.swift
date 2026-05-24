@@ -1,27 +1,23 @@
 import Combine
 import Foundation
-import PhotosUI
 import SwiftData
 
 @MainActor
 final class AIScannerViewModel: ObservableObject {
-    @Published var selectedPhotoItem: PhotosPickerItem?
     @Published private(set) var imageData: Data?
     @Published var notes = ""
     @Published private(set) var result: ToolAIAnalysis?
     @Published var isAnalyzing = false
     @Published var errorMessage: String?
 
-    func loadPhoto(from item: PhotosPickerItem?) async {
-        guard let item else { return }
-        do {
-            imageData = try await item.loadTransferable(type: Data.self)
-            result = nil
-            errorMessage = nil
-        } catch {
+    func setUploadedPhoto(_ data: Data?) {
+        guard let data else {
             errorMessage = "The selected photo could not be imported."
+            return
         }
-        selectedPhotoItem = nil
+        imageData = data
+        result = nil
+        errorMessage = nil
     }
 
     func setCameraPhoto(_ data: Data) {

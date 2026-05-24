@@ -10,6 +10,7 @@ struct AIToolScannerView: View {
     @State private var showCamera = false
     @State private var savedTool: ToolItem?
     @State private var showSavedAlert = false
+    @State private var selectedPhotoItem: PhotosPickerItem?
 
     var body: some View {
         ScrollView {
@@ -29,7 +30,7 @@ struct AIToolScannerView: View {
                     }
 
                     HStack(spacing: 10) {
-                        PhotosPicker(selection: $viewModel.selectedPhotoItem, matching: .images) {
+                        PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                             Label("Upload", systemImage: "photo.fill")
                         }
                         .buttonStyle(ToolVaultSecondaryButtonStyle())
@@ -83,8 +84,16 @@ struct AIToolScannerView: View {
         .toolVaultScreenBackground()
         .navigationTitle("AI Scanner")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.selectedPhotoItem) { _, newItem in
-            Task { await viewModel.loadPhoto(from: newItem) }
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            Task { @MainActor in
+                guard let newItem else { return }
+                do {
+                    viewModel.setUploadedPhoto(try await newItem.loadTransferable(type: Data.self))
+                } catch {
+                    viewModel.setUploadedPhoto(nil)
+                }
+                selectedPhotoItem = nil
+            }
         }
         .sheet(isPresented: $showCamera) {
             CameraPicker { data in

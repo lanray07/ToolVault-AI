@@ -8,6 +8,7 @@ struct ToolFormView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var viewModel = ToolFormViewModel()
     @State private var showCamera = false
+    @State private var selectedPhotoItems: [PhotosPickerItem] = []
 
     var body: some View {
         ScrollView {
@@ -53,7 +54,7 @@ struct ToolFormView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     SectionTitle("Photos")
                     HStack(spacing: 10) {
-                        PhotosPicker(selection: $viewModel.selectedPhotoItems, maxSelectionCount: 8, matching: .images) {
+                        PhotosPicker(selection: $selectedPhotoItems, maxSelectionCount: 8, matching: .images) {
                             Label("Upload Photos", systemImage: "photo.on.rectangle.angled")
                         }
                         .buttonStyle(ToolVaultSecondaryButtonStyle())
@@ -109,8 +110,8 @@ struct ToolFormView: View {
                     .foregroundStyle(ToolVaultTheme.accentOrange)
             }
         }
-        .onChange(of: viewModel.selectedPhotoItems) { _, newItems in
-            Task { await viewModel.loadPhotos(from: newItems) }
+        .onChange(of: selectedPhotoItems) { _, newItems in
+            importPhotos(from: newItems)
         }
         .sheet(isPresented: $showCamera) {
             CameraPicker { data in
@@ -125,6 +126,25 @@ struct ToolFormView: View {
             dismiss()
         } catch {
             viewModel.errorMessage = error.localizedDescription
+        }
+    }
+
+    private func importPhotos(from items: [PhotosPickerItem]) {
+        guard !items.isEmpty else { return }
+        Task { @MainActor in
+            viewModel.setPhotoImporting(true)
+            defer {
+                viewModel.setPhotoImporting(false)
+                selectedPhotoItems = []
+            }
+
+            for item in items {
+                do {
+                    viewModel.addImportedPhoto(try await item.loadTransferable(type: Data.self))
+                } catch {
+                    viewModel.addImportedPhoto(nil)
+                }
+            }
         }
     }
 
