@@ -422,6 +422,56 @@ def make_subscription_square(filename, title, price, subtitle, features, promo=F
     return path
 
 
+def make_subscription_review_screenshot(filename, title, price, subtitle, features):
+    w, h = 1242, 2688
+    im = screenshot_base((w, h))
+    d = ImageDraw.Draw(im, "RGBA")
+    margin = 82
+    title_block(
+        d,
+        f"{title} review screen",
+        f"{subtitle}. Shows the subscription option exactly as App Review will see it in the ToolVault AI paywall.",
+        w,
+        86,
+        margin,
+        1,
+    )
+
+    panel = (76, 825, w - 76, h - 125)
+    shadowed_panel(im, panel, 34, (17, 22, 28))
+    x0, y0, x1, y1 = panel
+    d.text((x0 + 42, y0 + 42), "ToolVault AI Paywall", font=font(42, "bold"), fill=WHITE)
+    d.text((x0 + 42, y0 + 96), "Subscription review preview", font=font(24), fill=MUTED)
+
+    card = (x0 + 42, y0 + 175, x1 - 42, y0 + 1005)
+    rounded(d, card, 30, SURFACE_2, (255, 255, 255, 34), 2)
+    d.text((card[0] + 42, card[1] + 42), title, font=font(56, "black"), fill=WHITE)
+    d.text((card[0] + 42, card[1] + 112), subtitle, font=font(28), fill=MUTED)
+    d.text((card[0] + 42, card[1] + 198), price, font=font(66, "black"), fill=ORANGE)
+
+    y = card[1] + 330
+    for item in features:
+        d.ellipse((card[0] + 52, y + 8, card[0] + 88, y + 44), fill=GREEN)
+        d.line((card[0] + 62, y + 27, card[0] + 72, y + 38, card[0] + 84, y + 17), fill=BLACK, width=5)
+        d.text((card[0] + 112, y), item, font=font(31, "semibold"), fill=WHITE)
+        y += 72
+
+    button_top = y + 34
+    d.rounded_rectangle((card[0] + 42, button_top, card[2] - 42, button_top + 70), radius=22, fill=ORANGE)
+    d.text((card[0] + 390, button_top + 18), "Continue", font=font(31, "bold"), fill=BLACK)
+
+    disclaimer = (
+        "Review note: no sign-in is required. Subscription entitlement state is simulated locally for review. "
+        "AI resale values are informational estimates only, not insurance valuations or financial advice."
+    )
+    rounded(d, (x0 + 42, y0 + 1060, x1 - 42, y0 + 1260), 24, (20, 29, 35), (255, 255, 255, 28), 1)
+    draw_wrapped(d, disclaimer, (x0 + 76, y0 + 1095), font(26), MUTED, x1 - x0 - 152, 10)
+
+    path = ASSET_ROOT / "SubscriptionReview" / filename
+    im.convert("RGB").save(path, quality=96)
+    return path
+
+
 def make_marketing_icon() -> Image.Image:
     size = 1024
     im = Image.new("RGBA", (size, size), CHARCOAL + (255,))
@@ -484,21 +534,21 @@ def main():
         generated.append(make_phone_screenshot(*screen))
         generated.append(make_ipad_screenshot(*screen, size=(2064, 2752), folder="iPad_13", suffix="ipad_13"))
         generated.append(make_ipad_screenshot(*screen))
-    generated.append(make_subscription_square(
+    generated.append(make_subscription_review_screenshot(
         "toolvault_ai_pro_monthly_review.png",
         "Pro Monthly",
         "\u00a312.99 / month",
         "Unlimited inventory intelligence",
         ["Unlimited tools", "AI scanner", "PDF exports", "Resale tracking", "Theft reports"],
     ))
-    generated.append(make_subscription_square(
+    generated.append(make_subscription_review_screenshot(
         "toolvault_ai_pro_yearly_review.png",
         "Pro Yearly",
         "\u00a399.99 / year",
         "Annual Pro access",
         ["Unlimited tools", "AI scanner", "Maintenance reminders", "PDF exports", "Resale tracking"],
     ))
-    generated.append(make_subscription_square(
+    generated.append(make_subscription_review_screenshot(
         "toolvault_ai_business_monthly_review.png",
         "Business Monthly",
         "\u00a349.99 / month",

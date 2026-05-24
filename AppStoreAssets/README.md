@@ -17,7 +17,7 @@ Upload the `iPhone_6_9` and `iPad_13` sets first. The `iPhone_6_5` and `iPad_12_
 - `SubscriptionReview/toolvault_ai_pro_yearly_review.png`
 - `SubscriptionReview/toolvault_ai_business_monthly_review.png`
 
-Use these in each subscription's review information screenshot field.
+Use these in each subscription's review information screenshot field. These are generated at `1242x2688`, matching an accepted iPhone screenshot specification for App Review.
 
 Optional promotional images:
 
