@@ -14,3 +14,12 @@ Package.resolved
 # App archives and debug output
 *.xcarchive
 *.dSYM
+
+# Local signing material
+SigningAssets/
+*.p8
+*.p12
+*.mobileprovision
+*.provisionprofile
+*.cer
+*.certSigningRequest
