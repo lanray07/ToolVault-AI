@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Xcode local state
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# Swift Package Manager
+.build/
+Package.resolved
+
+# App archives and debug output
+*.xcarchive
+*.dSYM

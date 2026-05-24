@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "bundleIdentifier": "com.toolvaultai.app",
+    "note": "Placeholder StoreKit products. Configure these IDs in App Store Connect or an Xcode StoreKit configuration before release."
+  },
+  "products": [
+    {
+      "id": "com.toolvaultai.pro.monthly",
+      "displayName": "ToolVault AI Pro Monthly",
+      "price": "12.99",
+      "currency": "GBP"
+    },
+    {
+      "id": "com.toolvaultai.pro.yearly",
+      "displayName": "ToolVault AI Pro Yearly",
+      "price": "99.99",
+      "currency": "GBP"
+    },
+    {
+      "id": "com.toolvaultai.business.monthly",
+      "displayName": "ToolVault AI Business Monthly",
+      "price": "49.99",
+      "currency": "GBP"
+    }
+  ]
+}
