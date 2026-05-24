@@ -31,13 +31,24 @@ jobs:
       - name: Build for iOS Simulator
         run: |
           set -o pipefail
-          xcodebuild \
+          if ! xcodebuild \
             -project ToolVaultAI.xcodeproj \
             -scheme ToolVaultAI \
             -configuration Debug \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
-            clean build | tee xcodebuild.log
+            clean build 2>&1 | tee xcodebuild.log; then
+            echo "::group::Last 200 lines of xcodebuild output"
+            tail -n 200 xcodebuild.log
+            echo "::endgroup::"
+            grep -E "error:|warning:" xcodebuild.log | head -n 50 | while IFS= read -r line; do
+              safe_line="${line//'%'/'%25'}"
+              safe_line="${safe_line//$'\n'/'%0A'}"
+              safe_line="${safe_line//$'\r'/'%0D'}"
+              echo "::error::$safe_line"
+            done
+            exit 1
+          fi
 
       - name: Upload build log
         if: always()
