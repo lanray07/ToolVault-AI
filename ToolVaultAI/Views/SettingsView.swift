@@ -66,10 +66,10 @@ struct SettingsView: View {
                 }
 
                 settingsGroup("Legal") {
-                    SettingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "Placeholder policy text") {
+                    SettingsRow(icon: "hand.raised.fill", title: "Privacy Policy", subtitle: "Local data, photos, notifications, and subscription handling") {
                         policyText = .privacy
                     }
-                    SettingsRow(icon: "doc.plaintext.fill", title: "Terms of Use", subtitle: "Placeholder terms text") {
+                    SettingsRow(icon: "doc.plaintext.fill", title: "Terms of Use", subtitle: "Apple standard EULA and auto-renewal terms") {
                         policyText = .terms
                     }
                     SettingsRow(icon: "info.circle.fill", title: "AI Disclaimer", subtitle: "AI estimates are informational only") {
@@ -196,9 +196,9 @@ private enum PolicyText: String, Identifiable {
     var bodyText: String {
         switch self {
         case .privacy:
-            return "ToolVault AI stores inventory records locally with SwiftData in this scaffold. Remote AI should be routed through your backend and must not embed API keys in the app."
+            return "ToolVault AI stores tool inventory records, photos, maintenance logs, assignment notes, theft reports, and generated report data locally on your device. Camera and photo library access are used only when you choose to add tool photos or receipts. Notifications are local maintenance reminders. ToolVault AI does not track users across apps or websites and does not sell personal data. Privacy policy: https://github.com/lanray07/ToolVault-AI/blob/main/PRIVACY_POLICY.md"
         case .terms:
-            return "This scaffold is provided as a production-ready starting point. Configure legal terms, subscriptions, backend endpoints, and data retention policies before public release."
+            return "ToolVault AI uses Apple's standard End User License Agreement (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/ Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current billing period. Purchases and cancellations are managed with your Apple ID in App Store account settings."
         case .aiDisclaimer:
             return "AI estimates are informational only. They are not insurance valuations, guarantees, or financial advice. Resale values may vary and users should verify all values independently."
         }

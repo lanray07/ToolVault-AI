@@ -91,8 +91,25 @@ final class SubscriptionService: ObservableObject {
     func placeholderPrice(for plan: SubscriptionPlan) -> String {
         switch plan {
         case .free: return "Free"
-        case .pro: return "£12.99 monthly or £99.99 yearly"
-        case .business: return "£49.99 monthly"
+        case .pro: return "GBP 12.99 monthly or GBP 99.99 yearly"
+        case .business: return "GBP 49.99 monthly"
+        }
+    }
+
+    func product(id: String) -> Product? {
+        products.first { $0.id == id }
+    }
+
+    func placeholderPrice(forProductID productID: String) -> String {
+        switch productID {
+        case Self.proMonthlyID:
+            return "GBP 12.99 / month"
+        case Self.proYearlyID:
+            return "GBP 99.99 / year"
+        case Self.businessMonthlyID:
+            return "GBP 49.99 / month"
+        default:
+            return "Price unavailable"
         }
     }
 
